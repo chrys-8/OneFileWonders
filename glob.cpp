@@ -128,16 +128,16 @@ void test_report(ReportCode code)
 	}
 }
 
-void test_glob(std::string_view pattern, std::string_view text, bool expected = true)
+void test_glob(std::string_view pattern, std::string_view text, bool shouldPass)
 {
 	bool result = glob(pattern, text);
-	test_report(result == expected ? TestPass : TestFail);
+	test_report(result == shouldPass ? TestPass : TestFail);
 
 	std::cout
 		<< "\t" << pattern
 		<< "\t" << text
 		<< "\t" << result
-		<< "\t" << (result == expected ? "pass" : "fail")
+		<< "\t" << (result == shouldPass ? "pass" : "fail")
 		<< "\n";
 }
 
@@ -146,95 +146,97 @@ int main()
 	using namespace std::literals::string_view_literals;
 	std::cout << std::boolalpha;
 
+	int reportCount = 0;
+
 	{
-		std::cout << 1;
+		std::cout << ++reportCount;
 		auto pattern = "lamb"sv;
 		auto text    = "lamby"sv;
-		test_glob(pattern, text);
+		test_glob(pattern, text, true);
 	}
 	{
-		std::cout << 2;
+		std::cout << ++reportCount;
 		auto pattern = "thing"sv;
 		auto text    = "otherthing"sv;
 		test_glob(pattern, text, false);
 	}
 	{
-		std::cout << 3;
+		std::cout << ++reportCount;
 		auto pattern = "*"sv;
 		auto text    = "anything"sv;
-		test_glob(pattern, text);
+		test_glob(pattern, text, true);
 	}
 	{
-		std::cout << 4;
+		std::cout << ++reportCount;
 		auto pattern = "main.*"sv;
 		auto text    = "main.css"sv;
-		test_glob(pattern, text);
+		test_glob(pattern, text, true);
 	}
 	{
-		std::cout << 5;
+		std::cout << ++reportCount;
 		auto pattern = "**"sv;
 		auto text    = "mightbreak"sv;
-		test_glob(pattern, text);
+		test_glob(pattern, text, true);
 	}
 	{
-		std::cout << 6;
+		std::cout << ++reportCount;
 		auto pattern = "*.txt"sv;
 		auto text    = "apple.tx.txt"sv;
-		test_glob(pattern, text);
+		test_glob(pattern, text, true);
 	}
 	{
-		std::cout << 7;
+		std::cout << ++reportCount;
 		auto pattern = "?at"sv;
 		auto text    = "cat"sv;
-		test_glob(pattern, text);
+		test_glob(pattern, text, true);
 	}
 	{
-		std::cout << 8;
+		std::cout << ++reportCount;
 		auto pattern = "?at"sv;
 		auto text    = "at"sv;
 		test_glob(pattern, text, false);
 	}
 	{
-		std::cout << 9;
+		std::cout << ++reportCount;
 		auto pattern = "ye?"sv;
 		auto text    = "ye"sv;
 		test_glob(pattern, text, false);
 	}
 	{
-		std::cout << "10";
+		std::cout << ++reportCount;
 		auto pattern = "[abc]"sv;
 		auto text    = "a"sv;
-		test_glob(pattern, text);
+		test_glob(pattern, text, true);
 	}
 	{
-		std::cout << "11";
+		std::cout << ++reportCount;
 		auto pattern = "[!aeiou]"sv;
 		auto text    = "b"sv;
-		test_glob(pattern, text);
+		test_glob(pattern, text, true);
 	}
 	{
-		std::cout << "12";
+		std::cout << ++reportCount;
 		auto pattern = "[!aeiou]"sv;
 		auto text    = "e"sv;
 		test_glob(pattern, text, false);
 	}
 	{
-		std::cout << "13";
+		std::cout << ++reportCount;
 		auto pattern = "[][!]"sv;
 		auto text    = "]"sv;
-		test_glob(pattern, text);
+		test_glob(pattern, text, true);
 	}
 	{
-		std::cout << "14";
+		std::cout << ++reportCount;
 		auto pattern = "[][!]"sv;
 		auto text    = "["sv;
-		test_glob(pattern, text);
+		test_glob(pattern, text, true);
 	}
 	{
-		std::cout << "15";
+		std::cout << ++reportCount;
 		auto pattern = "[][!]"sv;
 		auto text    = "!"sv;
-		test_glob(pattern, text);
+		test_glob(pattern, text, true);
 	}
 
 	std::cout << "\n";
